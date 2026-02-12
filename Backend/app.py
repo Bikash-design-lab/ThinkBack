@@ -1,0 +1,1 @@
+# Backend for ThinkBack, a flashcard app for Posting and gaining lowledge on a topic, exploring the indepth chats with AI.
