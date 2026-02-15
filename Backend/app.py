@@ -14,7 +14,7 @@ from Routes.chat_routes import router as chat_router
 # Load environment variables
 load_dotenv()
 
-DEVELOPMENT = os.getenv("DEVELOPMENT") == "True"
+DEVELOPMENT = os.getenv("DEVELOPMENT", "").lower() == "true"
 PORT = int(os.getenv("PORT", 8000))
 
 # Setup logging
