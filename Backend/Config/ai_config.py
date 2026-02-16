@@ -20,13 +20,16 @@ import time
 from openai import OpenAI
 from Config.logger import log_info, log_error, log_warning, log_success
 
-AI_RETRIES = os.getenv("AI_RETRIES")
+# Safely load retry count with a default value to prevent crash if ENV is missing
+AI_RETRIES = os.getenv("AI_RETRIES", "2")
 
 class AIHandler:
     def __init__(self):
         self.api_key = os.getenv("OPENROUTER_API_KEY")
-        # Default to 2 retries if AI_RETRIES is not set or invalid
-        self.max_retries = int(AI_RETRIES)
+        try:
+            self.max_retries = int(AI_RETRIES)
+        except (TypeError, ValueError):
+            self.max_retries = 2  # Fallback to 2 if setting is invalid
         
         if not self.api_key:
             log_error("OPENROUTER_API_KEY not found in environment variables.")
