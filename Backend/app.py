@@ -1,4 +1,22 @@
-# Backend for ThinkBack, a flashcard app for Posting and gaining knowledge on a topic, exploring the indepth chats with AI.
+"""
+ThinkBack Backend - FastAPI Application
+
+This module serves as the entry point for the ThinkBack backend service. 
+It facilitates a flashcard-based knowledge-sharing platform with AI-driven 
+chat capabilities.
+
+Key Features:
+- Lifecycle Management: Handles MongoDB connection/disconnection via async lifespan.
+- Middleware Integration: 
+    - SlowAPI for rate limiting to prevent abuse.
+    - CORSMiddleware for cross-origin resource sharing.
+- Routing: Modular API routes for posts and chat functionalities.
+- Health Monitoring: Simple health check endpoint for deployment verification.
+- Environment Configuration: Dynamic port and development mode detection using .env.
+
+Usage:
+    Run via `uvicorn app:app` or through the `main()` entry point.
+"""
 
 import os
 from contextlib import asynccontextmanager
@@ -11,6 +29,11 @@ from Routes.post_routes import router as post_router
 from Routes.chat_routes import router as chat_router
 from Config.logger import log_info, log_success, log_error
 
+from Config.limiter import limiter
+from slowapi import _rate_limit_exceeded_handler
+from slowapi.errors import RateLimitExceeded
+from slowapi.middleware import SlowAPIMiddleware
+from fastapi.middleware.cors import CORSMiddleware
 # Load environment variables
 load_dotenv()
 
@@ -20,14 +43,28 @@ PORT = int(os.getenv("PORT", 8000))
 @asynccontextmanager
 async def lifespan(app: FastAPI):
     # Startup
-    log_info("Connecting to MongoDB...")
-    ConnectToDB()
+    log_info("Connecting to MongoDB (Async)...")
+    await ConnectToDB()
     yield
     # Shutdown
-    log_info("Disconnecting from MongoDB...")
-    DisconnectFromDB()
+    log_info("Disconnecting from MongoDB (Async)...")
+    await DisconnectFromDB()
 
 app = FastAPI(lifespan=lifespan)
+
+# rate-limiter to make 10 request per minute
+app.state.limiter = limiter
+app.add_exception_handler(RateLimitExceeded, _rate_limit_exceeded_handler)
+app.add_middleware(SlowAPIMiddleware)
+
+# handle cors error from different origin request
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=["*"],
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"],
+)
 
 # Include routes
 log_info("Registering routes...")

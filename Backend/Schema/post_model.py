@@ -1,3 +1,13 @@
+"""
+Post Model Schema Module
+
+This module defines the Pydantic data models used for validating and structuring 
+post-related data stored in MongoDB. It includes schemas for ticket creation, 
+updates, and retrieval, ensuring type safety and data integrity across the backend.
+
+Allowed categories for posts are predefined to maintain consistency.
+"""
+
 # schema for post monogodb 
 from pydantic import BaseModel
 from typing import List, Optional

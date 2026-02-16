@@ -1,5 +1,22 @@
+"""
+Middleware module for ticket data validation.
+
+This module provides the `validate_ticket_data` function, which acts as a 
+FastAPI dependency to ensure that incoming ticket creation requests meet 
+the required business logic and data integrity constraints.
+
+Validation checks include:
+- Title length (minimum 5 non-whitespace characters).
+- Description length (minimum 10 non-whitespace characters).
+- Category membership (must be within the `VALID_CATEGORIES` set).
+
+If any validation criteria are not met, the middleware logs a warning 
+and raises an HTTPException with a 400 Bad Request status code.
+"""
+
 from fastapi import HTTPException, status
 from Schema.post_model import TicketCreate
+
 from Config.logger import log_warning, log_error
 
 # Valid categories for tickets

@@ -1,3 +1,16 @@
+"""
+Logger Configuration Module
+
+This module provides a centralized utility for conditional logging during development. 
+It utilizes environment variables to toggle log visibility and formats output with 
+distinctive emojis for improved readability in the console.
+
+Functionality:
+- Loads environment configuration via dotenv.
+- Provides specialized wrappers for different log levels (Info, Success, Error, Warning).
+- Ensures logs are only emitted when the 'DEVELOPMENT' environment variable is set to 'true'.
+"""
+
 import os
 from dotenv import load_dotenv
 

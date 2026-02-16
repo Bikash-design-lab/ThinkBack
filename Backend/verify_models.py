@@ -1,3 +1,25 @@
+"""
+Google Gemini API Model Verification Utility
+
+This script serves as a diagnostic tool to ensure the Backend is correctly 
+configured to communicate with the Google Gemini API. 
+
+Key Features:
+1. Environment Configuration: Loads the `GEMINI_API_KEY` from environment variables 
+   using `python-dotenv`.
+2. Robust Key Lookup: Includes a fallback mechanism to search for the `.env` file 
+   at a specific absolute path, ensuring connectivity during local development.
+3. API Validation: Configures the `google-generativeai` SDK and verifies the 
+   authenticity of the provided API key.
+4. Model Discovery: Queries and filters the available Google AI models to identify 
+   those supporting the `generateContent` method, printing their unique IDs and 
+   capabilities for reference in other parts of the application.
+
+Usage:
+Run this script to troubleshoot API connection issues or to verify which 
+model versions (e.g., gemini-1.5-flash) are currently accessible to your account.
+"""
+
 import os
 import google.generativeai as genai
 from dotenv import load_dotenv
