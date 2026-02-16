@@ -2,7 +2,7 @@ from fastapi import APIRouter, Depends, HTTPException
 from typing import List
 from Schema.post_model import TicketCreate, TicketResponse
 from Controllers import post_controller
-from Middleware.middleware.post import validate_ticket_data
+from Middleware.middleware_post import validate_ticket_data
 
 router = APIRouter(
     prefix="/tickets",
