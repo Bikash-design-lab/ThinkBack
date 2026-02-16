@@ -24,7 +24,7 @@ def post_serializer(post) -> dict:
         "title": post.get("title", "Title is missing"),
         "image": post.get("image"),
         "description": post.get("description", "Description is missing"),
-        "category": post.get("category", "Category is missing"),
+        "category": post.get("category", "Category is missing") if post.get("category").includes({"AI", "Podcast", "Education", "Programming", "Science", "Math", "Other"}) else "Please select a valid category",
         "tags": post.get("tags", []),
         "ai_summary": post.get("ai_summary"),
         "created_at": post.get("created_at"),

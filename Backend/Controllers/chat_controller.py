@@ -1,11 +1,11 @@
 import os
 import json
-import logging
+from Config.logger import log_info, log_error, log_success
 import google.generativeai as genai
 from Config.db import get_db
 from bson import ObjectId
 
-logger = logging.getLogger("api")
+from bson import ObjectId
 
 # Configure Gemini
 GENI_API_KEY = os.getenv("GEMINI_API_KEY")
@@ -14,6 +14,7 @@ model = genai.GenerativeModel('gemini-1.5-flash')
 
 async def stream_global_chat(message: str):
     try:
+        log_info(f"Starting global chat stream for message: {message[:50]}...")
         prompt = f"You are an educational AI tutor. Explain clearly and step-by-step: {message}"
         response = model.generate_content(prompt, stream=True)
         
@@ -21,12 +22,14 @@ async def stream_global_chat(message: str):
             if chunk.text:
                 yield f"data: {json.dumps({'text': chunk.text})}\n\n"
         
+        log_success("Global chat stream completed.")
         yield "data: [DONE]\n\n"
     except Exception as e:
-        logger.error(f"Error in global chat stream: {e}")
+        log_error(f"Error in global chat stream: {e}")
         yield f"data: {json.dumps({'error': str(e)})}\n\n"
 
 async def stream_ticket_chat(ticket_id: str, message: str):
+    log_info(f"Starting ticket chat stream for ID: {ticket_id}...")
     try:
         db = get_db()
         ticket = db.tickets.find_one({"_id": ObjectId(ticket_id)})
@@ -44,7 +47,8 @@ async def stream_ticket_chat(ticket_id: str, message: str):
             if chunk.text:
                 yield f"data: {json.dumps({'text': chunk.text})}\n\n"
         
+        log_success("Ticket chat stream completed.")
         yield "data: [DONE]\n\n"
     except Exception as e:
-        logger.error(f"Error in ticket chat stream: {e}")
+        log_error(f"Error in ticket chat stream: {e}")
         yield f"data: {json.dumps({'error': str(e)})}\n\n"

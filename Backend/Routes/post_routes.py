@@ -2,6 +2,7 @@ from fastapi import APIRouter, Depends, HTTPException
 from typing import List
 from Schema.post_model import TicketCreate, TicketResponse
 from Controllers import post_controller
+from Middleware.middleware.post import validate_ticket_data
 
 router = APIRouter(
     prefix="/tickets",
@@ -13,5 +14,5 @@ async def get_tickets():
     return await post_controller.get_all_tickets()
 
 @router.post("/", response_model=TicketResponse)
-async def create_ticket(ticket: TicketCreate):
+async def create_ticket(ticket: TicketCreate = Depends(validate_ticket_data)):
     return await post_controller.create_ticket(ticket)
