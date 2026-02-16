@@ -77,9 +77,17 @@ To prevent abuse, the following limits are applied:
 | **Rate Limiting (10/min)** | Prevents "API Exhaustion". Since LLM tokens are expensive/limited, we restrict usage to ensure the service remains available for everyone. |
 | **Multi-Model Fallback** | AI models can sometimes fail or hit quotas. Our `AIHandler` automatically fails over to cheaper/alternative models to maintain 100% uptime. |
 
-## 🚀 Getting Started
-Run the development server with hot-reloading:
-```bash
-fastapi dev app.py
-```
-This enables debug logs and auto-updates the API as you code.
+## ☁️ Deployment (Vercel)
+
+Your backend is optimized for Vercel deployment. Use the following settings in the Vercel Dashboard:
+
+1.  **Framework Preset**: FastAPI (or Other)
+2.  **Root Directory**: `Backend`
+3.  **Build Command**: `None` (Vercel handles this automatically)
+4.  **Install Command**: `pip install -r requirements.txt`
+5.  **Environment Variables**: Ensure you add all keys from your `.env` to the Vercel Environment Variables section.
+
+### Deployment Configuration (`vercel.json`)
+We have included a [vercel.json](file:///Users/bikash/Documents/Project/ThinkBack/Backend/vercel.json) that maps all incoming requests to your `app.py` entry point.
+
+---
