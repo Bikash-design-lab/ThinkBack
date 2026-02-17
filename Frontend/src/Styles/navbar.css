@@ -1,0 +1,94 @@
+/* Navbar Container */
+.navbar {
+    background-color: rgba(0, 0, 0, 0.8);
+    /* Black with opacity */
+    backdrop-filter: blur(12px);
+    border-bottom: 1px solid #333333;
+    position: sticky;
+    top: 0;
+    z-index: 50;
+}
+
+.navbar-container {
+    width: 100%;
+    margin: 0 auto;
+    padding: 0 1rem;
+    max-width: 1280px;
+    /* container auto */
+}
+
+.navbar-content {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    height: 4rem;
+    /* h-16 */
+}
+
+/* Logo */
+.navbar-logo {
+    font-size: 1.5rem;
+    /* text-2xl */
+    font-weight: 700;
+    color: white;
+    text-decoration: none;
+    transition: color 0.15s ease;
+}
+
+.navbar-logo:hover {
+    color: #f97316;
+    /* Orange hover */
+}
+
+/* Navigation Links */
+.nav-links {
+    display: none;
+}
+
+@media (min-width: 768px) {
+    .nav-links {
+        display: flex;
+        justify-content: space-between;
+        gap: 1.5rem;
+        /* space-x-6 */
+        align-items: center;
+    }
+}
+
+.nav-link {
+    color: #d1d5db;
+    /* text-gray-300 */
+    text-decoration: none;
+    transition: color 0.15s ease;
+}
+
+.nav-link:hover {
+    color: #f97316;
+    /* Orange hover */
+}
+
+/* Mobile Menu Button */
+.mobile-menu-container {
+    display: block;
+}
+
+@media (min-width: 768px) {
+    .mobile-menu-container {
+        display: none;
+    }
+}
+
+.mobile-menu-btn {
+    background: none;
+    border: none;
+    color: #d1d5db;
+    /* text-gray-300 */
+    font-size: 1.5rem;
+    cursor: pointer;
+    padding: 0.5rem;
+}
+
+.mobile-menu-btn:hover {
+    color: #f97316;
+    /* Orange hover */
+}

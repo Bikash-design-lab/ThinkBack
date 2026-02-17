@@ -12,9 +12,9 @@ const isLocalhost =
         window.location.hostname === '127.0.0.1');
 
 // Automatic Backend URL Selection
-export const API_BASE_URL = isLocalhost
-    ? 'http://localhost:8000'  // Local development
-    : 'https://think-back-backend.vercel.app';  // Production
+export const API_BASE_URL = import.meta.env.VITE_BACKEND_URL || (isLocalhost
+    ? 'http://localhost:8000' : // Local development fallback
+    'https://think-back-backend.vercel.app');  // Production fallback
 
 export const IS_DEVELOPMENT = isLocalhost;
 

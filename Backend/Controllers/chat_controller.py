@@ -23,13 +23,24 @@ from Config.db import get_db
 from bson import ObjectId
 from Config.ai_config import ai_handler
 
+# Load centralized style instructions from external file
+GLOBAL_CHAT_PROMPT_PATH = os.path.join(os.path.dirname(__file__), "global_chat.txt")
+
+def get_chat_style():
+    try:
+        with open(GLOBAL_CHAT_PROMPT_PATH, "r", encoding="utf-8") as f:
+            return f.read().strip()
+    except Exception as e:
+        log_error(f"Error reading global_chat.txt: {e}")
+        return "Format your response in a compact, chat-friendly style."
+
+CHAT_STYLE_INSTRUCTIONS = get_chat_style()
+
 async def stream_global_chat(message: str):
     try:
-        # StreamingResponse (SSE).
-        # Server-Sent Events (SSE) allow us to stream AI responses in real-time. 
         # This provides a much better UX than waiting 10+ seconds for a full paragraph.
-        prompt = f"You are an educational AI tutor. Explain clearly and step-by-step: {message}"
-        response = ai_handler.stream_content(prompt)
+        prompt = message
+        response = ai_handler.stream_content(prompt, system_instruction=CHAT_STYLE_INSTRUCTIONS)
         
         try:
             # Mid-stream error handling.
@@ -62,9 +73,9 @@ async def stream_ticket_chat(ticket_id: str, message: str):
             return
 
         context = f"Ticket Title: {ticket['title']}\nTicket Description: {ticket['description']}\nAI Summary: {ticket.get('ai_summary', '')}"
-        prompt = f"Use this ticket as context and answer educationally:\n\nCONTEXT:\n{context}\n\nUSER QUESTION: {message}"
+        prompt = f"USER QUESTION: {message}\n\nCONTEXT:\n{context}"
         
-        response = ai_handler.stream_content(prompt)
+        response = ai_handler.stream_content(prompt, system_instruction=CHAT_STYLE_INSTRUCTIONS)
         
         try:
             for chunk in response:

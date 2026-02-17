@@ -19,6 +19,8 @@ interface UseSSEStreamReturn {
     startStream: (message: string, ticketId?: string) => void;
     stopStream: () => void;
     clearMessages: () => void;
+    currentAssistantMessage: string;
+    elapsedTime: number;
 }
 
 export const useSSEStream = (chatType: 'global' | 'ticket', ticketId?: string): UseSSEStreamReturn => {
@@ -26,8 +28,10 @@ export const useSSEStream = (chatType: 'global' | 'ticket', ticketId?: string): 
     const [status, setStatus] = useState<StreamStatus>(StreamStatus.IDLE);
     const [error, setError] = useState<string | null>(null);
     const [currentAssistantMessage, setCurrentAssistantMessage] = useState<string>('');
+    const [elapsedTime, setElapsedTime] = useState<number>(0);
 
     const stopStreamRef = useRef<(() => void) | null>(null);
+    const assistantMessageRef = useRef<string>('');
 
     // Determine storage key based on chat type
     const storageKey = chatType === 'global'
@@ -60,6 +64,23 @@ export const useSSEStream = (chatType: 'global' | 'ticket', ticketId?: string): 
         }
     }, [messages, storageKey]);
 
+    // Timer logic
+    useEffect(() => {
+        let interval: any = null;
+
+        if (status === StreamStatus.CONNECTING || status === StreamStatus.STREAMING) {
+            interval = setInterval(() => {
+                setElapsedTime((prev) => prev + 1);
+            }, 1000);
+        } else {
+            if (interval) clearInterval(interval);
+        }
+
+        return () => {
+            if (interval) clearInterval(interval);
+        };
+    }, [status]);
+
     const startStream = useCallback((message: string, ticketIdParam?: string) => {
         if (!message.trim()) {
             setError('Message cannot be empty');
@@ -77,6 +98,8 @@ export const useSSEStream = (chatType: 'global' | 'ticket', ticketId?: string): 
         setStatus(StreamStatus.CONNECTING);
         setError(null);
         setCurrentAssistantMessage('');
+        setElapsedTime(0);
+        assistantMessageRef.current = '';
 
         const effectiveTicketId = ticketIdParam || ticketId;
 
@@ -86,19 +109,24 @@ export const useSSEStream = (chatType: 'global' | 'ticket', ticketId?: string): 
                 onMessage: (chunk) => {
                     if (chunk.text) {
                         setStatus(StreamStatus.STREAMING);
-                        setCurrentAssistantMessage((prev) => prev + chunk.text);
+                        assistantMessageRef.current += chunk.text;
+                        setCurrentAssistantMessage(assistantMessageRef.current);
                     }
                 },
                 onComplete: () => {
-                    setMessages((prev) => [
-                        ...prev,
-                        {
-                            role: 'assistant',
-                            content: currentAssistantMessage,
-                            timestamp: Date.now(),
-                        },
-                    ]);
+                    const finalMessage = assistantMessageRef.current;
+                    if (finalMessage) {
+                        setMessages((prev) => [
+                            ...prev,
+                            {
+                                role: 'assistant',
+                                content: finalMessage,
+                                timestamp: Date.now(),
+                            },
+                        ]);
+                    }
                     setCurrentAssistantMessage('');
+                    assistantMessageRef.current = '';
                     setStatus(StreamStatus.COMPLETE);
                     stopStreamRef.current = null;
                 },
@@ -112,19 +140,24 @@ export const useSSEStream = (chatType: 'global' | 'ticket', ticketId?: string): 
                 onMessage: (chunk) => {
                     if (chunk.text) {
                         setStatus(StreamStatus.STREAMING);
-                        setCurrentAssistantMessage((prev) => prev + chunk.text);
+                        assistantMessageRef.current += chunk.text;
+                        setCurrentAssistantMessage(assistantMessageRef.current);
                     }
                 },
                 onComplete: () => {
-                    setMessages((prev) => [
-                        ...prev,
-                        {
-                            role: 'assistant',
-                            content: currentAssistantMessage,
-                            timestamp: Date.now(),
-                        },
-                    ]);
+                    const finalMessage = assistantMessageRef.current;
+                    if (finalMessage) {
+                        setMessages((prev) => [
+                            ...prev,
+                            {
+                                role: 'assistant',
+                                content: finalMessage,
+                                timestamp: Date.now(),
+                            },
+                        ]);
+                    }
                     setCurrentAssistantMessage('');
+                    assistantMessageRef.current = '';
                     setStatus(StreamStatus.COMPLETE);
                     stopStreamRef.current = null;
                 },
@@ -136,15 +169,8 @@ export const useSSEStream = (chatType: 'global' | 'ticket', ticketId?: string): 
             });
 
         stopStreamRef.current = cleanup;
-    }, [chatType, ticketId, currentAssistantMessage]);
+    }, [chatType, ticketId, storageKey]);
 
-    // Update messages when currentAssistantMessage changes
-    useEffect(() => {
-        if (currentAssistantMessage && status === StreamStatus.STREAMING) {
-            // This effect ensures we can display the streaming message in real-time
-            // The actual message is added to the array in onComplete
-        }
-    }, [currentAssistantMessage, status]);
 
     const stopStream = useCallback(() => {
         if (stopStreamRef.current) {
@@ -158,6 +184,7 @@ export const useSSEStream = (chatType: 'global' | 'ticket', ticketId?: string): 
     const clearMessages = useCallback(() => {
         setMessages([]);
         setCurrentAssistantMessage('');
+        assistantMessageRef.current = '';
         setStatus(StreamStatus.IDLE);
         setError(null);
         sessionStorage.removeItem(storageKey);
@@ -180,9 +207,9 @@ export const useSSEStream = (chatType: 'global' | 'ticket', ticketId?: string): 
         startStream,
         stopStream,
         clearMessages,
-        // Expose current streaming message for real-time display
-        ...(currentAssistantMessage && { currentAssistantMessage }),
-    } as UseSSEStreamReturn & { currentAssistantMessage?: string };
+        currentAssistantMessage,
+        elapsedTime,
+    };
 };
 
 export default useSSEStream;

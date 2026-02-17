@@ -5,36 +5,37 @@
  */
 
 import { Link } from 'react-router-dom';
+import '../../Styles/navbar.css';
 
 const Navbar = () => {
     return (
-        <nav className="bg-gray-900/50 backdrop-blur-lg border-b border-gray-800">
-            <div className="container mx-auto px-4">
-                <div className="flex items-center justify-between h-16">
+        <nav className="navbar">
+            <div className="navbar-container">
+                <div className="navbar-content">
                     {/* Logo */}
-                    <Link to="/" className="text-2xl font-bold text-white hover:text-blue-400 transition-colors">
+                    <Link to="/" className="navbar-logo">
                         ThinkBack
                     </Link>
 
                     {/* Navigation Links */}
-                    <div className="hidden md:flex items-center space-x-6">
-                        <Link to="/" className="text-gray-300 hover:text-white transition-colors">
+                    <div className="nav-links">
+                        <Link to="/" className="nav-link">
                             Dashboard
                         </Link>
-                        <Link to="/tickets" className="text-gray-300 hover:text-white transition-colors">
-                            Tickets
+                        <Link to="/tickets" className="nav-link">
+                            View Tickets
                         </Link>
-                        <Link to="/chat/global" className="text-gray-300 hover:text-white transition-colors">
+                        <Link to="/chat" className="nav-link">
                             Chat with AI
                         </Link>
-                        <Link to="/about" className="text-gray-300 hover:text-white transition-colors">
+                        <Link to="/about" className="nav-link">
                             About
                         </Link>
                     </div>
 
                     {/* Mobile menu button - TODO: implement hamburger menu */}
-                    <div className="md:hidden">
-                        <button className="text-gray-300 hover:text-white">
+                    <div className="mobile-menu-container">
+                        <button className="mobile-menu-btn">
                             ☰
                         </button>
                     </div>

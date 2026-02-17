@@ -80,43 +80,28 @@ class ChatService {
 
                 const reader = response.body.getReader();
                 const decoder = new TextDecoder();
+                let buffer = '';
 
                 while (!isClosed) {
                     const { done, value } = await reader.read();
 
                     if (done) {
                         logger.info('SSE stream completed');
+                        if (buffer.trim()) {
+                            this.processSSEBuffer(buffer, callbacks, () => { isClosed = true; });
+                        }
                         callbacks.onComplete?.();
                         break;
                     }
 
-                    const chunk = decoder.decode(value, { stream: true });
-                    const lines = chunk.split('\n');
+                    buffer += decoder.decode(value, { stream: true });
+                    const lines = buffer.split('\n');
+
+                    // Keep the last partial line in the buffer
+                    buffer = lines.pop() || '';
 
                     for (const line of lines) {
-                        if (line.startsWith('data: ')) {
-                            const data = line.slice(6); // Remove 'data: ' prefix
-
-                            if (data === '[DONE]') {
-                                logger.info('SSE [DONE] signal received');
-                                callbacks.onComplete?.();
-                                isClosed = true;
-                                break;
-                            }
-
-                            try {
-                                const parsed: SSEChunk = JSON.parse(data);
-
-                                if (parsed.error) {
-                                    logger.error('SSE error chunk:', parsed.error);
-                                    callbacks.onError?.(parsed.error);
-                                } else if (parsed.text) {
-                                    callbacks.onMessage(parsed);
-                                }
-                            } catch (parseError) {
-                                logger.warn('Failed to parse SSE chunk:', data);
-                            }
-                        }
+                        this.processSSELine(line, callbacks, () => { isClosed = true; });
                     }
                 }
             })
@@ -132,6 +117,45 @@ class ChatService {
             logger.info('Closing SSE stream');
             isClosed = true;
         };
+    }
+
+    /**
+     * Process a single SSE buffer (final flush)
+     */
+    private processSSEBuffer(buffer: string, callbacks: any, closeStream: () => void) {
+        const lines = buffer.split('\n');
+        for (const line of lines) {
+            this.processSSELine(line, callbacks, closeStream);
+        }
+    }
+
+    /**
+     * Process a single SSE line
+     */
+    private processSSELine(line: string, callbacks: any, closeStream: () => void) {
+        if (line.startsWith('data: ')) {
+            const data = line.slice(6); // Remove 'data: ' prefix
+
+            if (data === '[DONE]') {
+                logger.info('SSE [DONE] signal received');
+                callbacks.onComplete?.();
+                closeStream();
+                return;
+            }
+
+            try {
+                const parsed: SSEChunk = JSON.parse(data.trim());
+
+                if (parsed.error) {
+                    logger.error('SSE error chunk:', parsed.error);
+                    callbacks.onError?.(parsed.error);
+                } else if (parsed.text) {
+                    callbacks.onMessage(parsed);
+                }
+            } catch (parseError) {
+                logger.warn('Failed to parse SSE chunk:', data);
+            }
+        }
     }
 }
 
