@@ -8,6 +8,7 @@ import { Link } from 'react-router-dom';
 import useTickets from '../../Hooks/useTickets';
 import ScaleLoader from '../Common/loader';
 import { formatDate, formatCategory } from '../../utils/formatters';
+import Footer from '../Pages/footer';
 
 const Dashboard = () => {
     const { tickets, loading, error } = useTickets(true);
@@ -129,6 +130,7 @@ const Dashboard = () => {
                 </section>
 
             </div>
+            <Footer />
         </div>
     );
 };
