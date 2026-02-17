@@ -2,6 +2,17 @@
 
 AI-powered educational helpdesk platform built with modern React architecture.
 
+## Frontend URL: [DEPLOYED_URL](https://think-back.vercel.app)
+
+## Features
+
+- Ticket Management
+- Real-time AI Chat
+- Flashcard-based knowledge sharing
+- Rate limiting
+- Session persistence
+- Auto switch between localhost and deployed url
+
 ## Tech Stack
 
 - **React 19** + **TypeScript** - Type-safe component development
