@@ -36,11 +36,11 @@ def get_chat_style():
 
 CHAT_STYLE_INSTRUCTIONS = get_chat_style()
 
-async def stream_global_chat(message: str):
+async def stream_global_chat(message: str, model: str = None):
     try:
         # This provides a much better UX than waiting 10+ seconds for a full paragraph.
         prompt = message
-        response = ai_handler.stream_content(prompt, system_instruction=CHAT_STYLE_INSTRUCTIONS)
+        response = ai_handler.stream_content(prompt, model=model, system_instruction=CHAT_STYLE_INSTRUCTIONS)
         
         try:
             # Mid-stream error handling.
@@ -62,7 +62,7 @@ async def stream_global_chat(message: str):
         log_error(f"Initial error in global chat stream: {e}")
         yield f"data: {json.dumps({'error': str(e)})}\n\n"
 
-async def stream_ticket_chat(ticket_id: str, message: str):
+async def stream_ticket_chat(ticket_id: str, message: str, model: str = None):
     log_info(f"Starting ticket chat stream for ID: {ticket_id}...")
     try:
         db = get_db()
@@ -75,7 +75,7 @@ async def stream_ticket_chat(ticket_id: str, message: str):
         context = f"Ticket Title: {ticket['title']}\nTicket Description: {ticket['description']}\nAI Summary: {ticket.get('ai_summary', '')}"
         prompt = f"USER QUESTION: {message}\n\nCONTEXT:\n{context}"
         
-        response = ai_handler.stream_content(prompt, system_instruction=CHAT_STYLE_INSTRUCTIONS)
+        response = ai_handler.stream_content(prompt, model=model, system_instruction=CHAT_STYLE_INSTRUCTIONS)
         
         try:
             for chunk in response:

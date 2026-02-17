@@ -67,6 +67,20 @@
     /* Orange hover */
 }
 
+.nav-badge {
+    font-size: 0.6rem;
+    font-weight: 800;
+    color: #f97316;
+    border: 1px dashed #f97316;
+    padding: 0.1rem 0.25rem;
+    border-radius: 4px;
+    margin-left: 0.4rem;
+    text-transform: uppercase;
+    vertical-align: middle;
+    letter-spacing: 0.025em;
+    background-color: rgba(249, 115, 22, 0.05);
+}
+
 /* Mobile Menu Button */
 .mobile-menu-container {
     display: block;

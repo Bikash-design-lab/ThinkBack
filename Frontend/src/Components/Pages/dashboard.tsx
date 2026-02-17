@@ -36,10 +36,11 @@ const Dashboard = () => {
                     <section className="quick-actions-grid">
 
                         <Link
-                            to="/tickets/create"
+                            to="/tickets"
+                            state={{ openCreate: true }}
                             className="action-card create"
                         >
-                            <div className="action-icon">📝</div>
+                            <div className="action-icon"></div>
                             <h3 className="action-title">Create Ticket</h3>
                             <p>Ask a question or report an issue</p>
                         </Link>
@@ -48,7 +49,7 @@ const Dashboard = () => {
                             to="/chat"
                             className="action-card chat"
                         >
-                            <div className="action-icon">💬</div>
+                            <div className="action-icon"></div>
                             <h3 className="action-title">Chat with AI</h3>
                             <p>Get instant help from AI tutor</p>
                         </Link>
@@ -57,7 +58,7 @@ const Dashboard = () => {
                             to="/tickets"
                             className="action-card view"
                         >
-                            <div className="action-icon">📚</div>
+                            <div className="action-icon"></div>
                             <h3 className="action-title">View Tickets</h3>
                             <p>Browse all knowledge tickets</p>
                         </Link>
@@ -77,7 +78,7 @@ const Dashboard = () => {
                             <div className="state-container">
                                 <ScaleLoader
                                     loading={true}
-                                    color="#3b82f6"
+                                    color="#f97316"
                                     height={35}
                                     width={4}
                                 />

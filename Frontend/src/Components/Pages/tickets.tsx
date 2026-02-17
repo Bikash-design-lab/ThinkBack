@@ -2,65 +2,58 @@
  * Tickets Page Component
  * 
  * Displays all tickets from the database in a grid layout.
+ * Create a new ticket button should open a modal to create a new ticket.
  */
 
 import { useState, useEffect } from 'react';
-import { Link } from 'react-router-dom';
+import { Link, useLocation } from 'react-router-dom';
 import ScaleLoader from '../Common/loader';
 import { formatDate, formatCategory } from '../../utils/formatters';
-import { API_BASE_URL } from '../../config/constants';
+import useTickets from '../../Hooks/useTickets';
+import CreateNewTicket from '../Forms/createNewTicket';
 import Footer from './footer';
 import '../../Styles/tickets.css';
 
-interface Ticket {
-    id: string;
-    title: string;
-    description: string;
-    category: string;
-    tags: string[];
-    image: string;
-    ai_summary: string;
-    created_at: string;
-}
-
-const BACKEND_URL = API_BASE_URL;
-
 const Tickets = () => {
-    const [tickets, setTickets] = useState<Ticket[]>([]);
-    const [loading, setLoading] = useState(true);
-    const [error, setError] = useState<string | null>(null);
+    const { tickets, loading, error, fetchTickets } = useTickets(true);
+    const [isCreateModalOpen, setIsCreateModalOpen] = useState(false);
+    const location = useLocation();
 
+    // Handle auto-opening modal from dashboard navigation
     useEffect(() => {
-        const fetchTickets = async () => {
-            try {
-                setLoading(true);
-                const response = await fetch(`${BACKEND_URL}/api/tickets/`);
-
-                if (!response.ok) {
-                    throw new Error('Failed to fetch tickets');
-                }
-
-                const data = await response.json();
-                setTickets(data);
-                setError(null);
-            } catch (err) {
-                setError(err instanceof Error ? err.message : 'An error occurred');
-            } finally {
-                setLoading(false);
-            }
-        };
-
-        fetchTickets();
-    }, []);
+        if (location.state?.openCreate) {
+            setIsCreateModalOpen(true);
+            // Clear state to prevent modal from re-opening on manual refresh or back button
+            window.history.replaceState({}, document.title);
+        }
+    }, [location]);
 
     return (
         <div className="tickets-container">
             <div className="tickets-content">
                 {/* Page Header */}
                 <header className="tickets-header">
-                    <h1 className="tickets-title">Browse Tickets</h1>
+                    <div className="tickets-header-top">
+                        <h1 className="tickets-title">Browse Tickets</h1>
+                        <button
+                            className="create-ticket-btn"
+                            onClick={() => setIsCreateModalOpen(true)}
+                        >
+                            <span className="plus-icon">+</span> Create Ticket
+                        </button>
+                    </div>
                 </header>
 
+                {/* Create Ticket Modal */}
+                {isCreateModalOpen && (
+                    <CreateNewTicket
+                        onClose={() => setIsCreateModalOpen(false)}
+                        onSuccess={() => {
+                            fetchTickets();
+                            setIsCreateModalOpen(false);
+                        }}
+                    />
+                )}
                 {/* Loading State */}
                 {loading && (
                     <div className="tickets-state-container">

@@ -9,7 +9,7 @@ import { useState, useCallback, useEffect, useRef } from 'react';
 import type { ChatMessage } from '../Types/chat.types';
 import { StreamStatus } from '../Types/chat.types';
 import chatService from '../Services/chat.service';
-import { STORAGE_KEYS } from '../config/constants';
+import { STORAGE_KEYS, AI_MODELS } from '../config/constants';
 import logger from '../utils/logger';
 
 interface UseSSEStreamReturn {
@@ -21,6 +21,8 @@ interface UseSSEStreamReturn {
     clearMessages: () => void;
     currentAssistantMessage: string;
     elapsedTime: number;
+    selectedModel: string;
+    setSelectedModel: (model: string) => void;
 }
 
 export const useSSEStream = (chatType: 'global' | 'ticket', ticketId?: string): UseSSEStreamReturn => {
@@ -29,6 +31,7 @@ export const useSSEStream = (chatType: 'global' | 'ticket', ticketId?: string): 
     const [error, setError] = useState<string | null>(null);
     const [currentAssistantMessage, setCurrentAssistantMessage] = useState<string>('');
     const [elapsedTime, setElapsedTime] = useState<number>(0);
+    const [selectedModel, setSelectedModel] = useState<string>(AI_MODELS[0].id);
 
     const stopStreamRef = useRef<(() => void) | null>(null);
     const assistantMessageRef = useRef<string>('');
@@ -105,7 +108,7 @@ export const useSSEStream = (chatType: 'global' | 'ticket', ticketId?: string): 
 
         // Start SSE stream
         const cleanup = chatType === 'global'
-            ? chatService.streamGlobalChat(message, {
+            ? chatService.streamGlobalChat(message, selectedModel, {
                 onMessage: (chunk) => {
                     if (chunk.text) {
                         setStatus(StreamStatus.STREAMING);
@@ -136,7 +139,7 @@ export const useSSEStream = (chatType: 'global' | 'ticket', ticketId?: string): 
                     stopStreamRef.current = null;
                 },
             })
-            : chatService.streamTicketChat(effectiveTicketId!, message, {
+            : chatService.streamTicketChat(effectiveTicketId!, message, selectedModel, {
                 onMessage: (chunk) => {
                     if (chunk.text) {
                         setStatus(StreamStatus.STREAMING);
@@ -169,7 +172,7 @@ export const useSSEStream = (chatType: 'global' | 'ticket', ticketId?: string): 
             });
 
         stopStreamRef.current = cleanup;
-    }, [chatType, ticketId, storageKey]);
+    }, [chatType, ticketId, storageKey, selectedModel]);
 
 
     const stopStream = useCallback(() => {
@@ -209,6 +212,8 @@ export const useSSEStream = (chatType: 'global' | 'ticket', ticketId?: string): 
         clearMessages,
         currentAssistantMessage,
         elapsedTime,
+        selectedModel,
+        setSelectedModel,
     };
 };
 

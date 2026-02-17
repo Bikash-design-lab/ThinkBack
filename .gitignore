@@ -3,7 +3,7 @@ __pycache__/
 *.py[cod]
 *$py.class
 venv/
-
+Note/
 .env
 # OS
 .DS_Store
