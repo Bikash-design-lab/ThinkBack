@@ -2,6 +2,17 @@
 
 This directory contains the FastAPI-powered "intelligence layer" for the ThinkBack platform. It manages data persistence, robust AI reasoning, and real-time educational streaming.
 
+## 🛠️ Tech Stack 
+
+- **Framework**: FastAPI
+- **Database**: MongoDB (via Motor)
+- **AI Integration**: OpenRouter (Multi-Model Support)
+- **Rate Limiting**: SlowAPI
+- **Validation**: Pydantic
+
+## This site is deployed on Vercel & [BASEURL](https://think-back-backend.vercel.app)
+## FOR API [SWAGGER REDOC DOCS](https://think-back-backend.vercel.app/redoc)
+
 ## 🔄 Core Request Flow
 
 ```mermaid

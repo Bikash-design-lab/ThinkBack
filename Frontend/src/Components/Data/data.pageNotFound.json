@@ -1,0 +1,24 @@
+{
+    "page_404": {
+        "meta": {
+            "document_title": "404 — Ticket Not Found | ThinkBack",
+            "ticket_id": "TB-404",
+            "status": "NOT FOUND",
+            "category": "Unknown"
+        },
+        "image": "broken ticket image url will addeding ",
+        "code": {
+            "number": "404",
+            "title": "Ticket not found."
+        },
+        "ai_block": {
+            "message": "I searched every ticket in the knowledge base... ran through all models... even tried the fallback chain. This page simply does not exist. Let me redirect you somewhere I can actually help."
+        },
+        "actions": {
+            "primary": {
+                "label": "← Back to Home",
+                "href": "/"
+            }
+        }
+    }
+}
