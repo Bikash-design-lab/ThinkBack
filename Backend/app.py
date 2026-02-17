@@ -60,7 +60,11 @@ app.add_middleware(SlowAPIMiddleware)
 # handle cors error from different origin request
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["*"],
+    allow_origins=[
+        "https://think-back.vercel.app", # vercel frontend
+        "https://think-back-frontend.vercel.app", # vercel frontend
+        "http://localhost:5173", # local frontend
+    ],
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],

@@ -5,9 +5,18 @@
  * API endpoints, and application-wide constants.
  */
 
-// Environment Variables
-export const API_BASE_URL = import.meta.env.VITE_BACKEND_URL || 'http://localhost:8000';
-export const IS_DEVELOPMENT = import.meta.env.DEV;
+// Runtime Environment Detection
+const isLocalhost =
+    typeof window !== 'undefined' &&
+    (window.location.hostname === 'localhost' ||
+        window.location.hostname === '127.0.0.1');
+
+// Automatic Backend URL Selection
+export const API_BASE_URL = isLocalhost
+    ? 'http://localhost:8000'  // Local development
+    : 'https://think-back-backend.vercel.app';  // Production
+
+export const IS_DEVELOPMENT = isLocalhost;
 
 // API Endpoints
 export const API_ENDPOINTS = {
