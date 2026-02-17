@@ -73,7 +73,7 @@ app.include_router(chat_router, prefix="/api")
 log_success("Routes registered successfully.")
 
 # health check of api
-@app.get("/healthy")
+@app.get("/")
 def health_check():
     log_info("Health check endpoint called.")
     return {"message": "ThinkBack Backend is healthy!"}
