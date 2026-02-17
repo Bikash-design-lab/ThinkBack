@@ -30,13 +30,14 @@ router = APIRouter(
 
 class ChatMessage(BaseModel):
     message: str
+    model: str = None
 
 # 10/minutes limit to prevent API Exhaustion
 @router.post("/global/stream")
 @limiter.limit("10/minute")
 async def global_chat(chat_msg: ChatMessage, request: Request):
     return StreamingResponse(
-        chat_controller.stream_global_chat(chat_msg.message),
+        chat_controller.stream_global_chat(chat_msg.message, chat_msg.model),
         media_type="text/event-stream"
     )
 
@@ -44,6 +45,6 @@ async def global_chat(chat_msg: ChatMessage, request: Request):
 @limiter.limit("10/minute")
 async def ticket_chat(ticket_id: str, chat_msg: ChatMessage, request: Request):
     return StreamingResponse(
-        chat_controller.stream_ticket_chat(ticket_id, chat_msg.message),
+        chat_controller.stream_ticket_chat(ticket_id, chat_msg.message, chat_msg.model),
         media_type="text/event-stream"
     )

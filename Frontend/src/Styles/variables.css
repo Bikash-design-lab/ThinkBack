@@ -4,10 +4,10 @@
  */
 
 :root {
-    /* Brand Colors */
-    --color-primary: #3b82f6;
-    --color-primary-dark: #2563eb;
-    --color-primary-light: #60a5fa;
+    /* Brand Colors (Orange Theme) */
+    --color-primary: #f97316;
+    --color-primary-dark: #ea580c;
+    --color-primary-light: #fb923c;
 
     --color-secondary: #8b5cf6;
     --color-secondary-dark: #7c3aed;

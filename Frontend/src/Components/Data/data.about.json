@@ -214,12 +214,6 @@
             "detail": "Every ticket automatically triggers AI summary generation on creation"
         },
         {
-            "id": "ai_summary",
-            "title": "Auto AI Summary",
-            "description": "Each ticket gets an AI-generated educational summary the moment it's saved",
-            "detail": "Powered by OpenRouter with multi-model fallback"
-        },
-        {
             "id": "ticket_chat",
             "title": "Ticket-Aware Chat",
             "description": "Chat with AI using a specific ticket as full context",

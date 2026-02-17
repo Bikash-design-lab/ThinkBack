@@ -1,84 +1,82 @@
 # ThinkBack Frontend
 
-AI-powered educational helpdesk platform built with modern React architecture.
+AI-powered educational helpdesk platform built with **React 19**, **Tailwind CSS v4**, and a high-performance **SSE Streaming** architecture.
 
-## Frontend URL: [DEPLOYED_URL](https://think-back.vercel.app)
+## 🚀 Frontend URL: [think-back.vercel.app](https://think-back.vercel.app)
 
-## Features
+## ✨ Features
 
-- Ticket Management
-- Real-time AI Chat
-- Flashcard-based knowledge sharing
-- Rate limiting
-- Session persistence
-- Auto switch between localhost and deployed url
+- **Global Ticket State**: Instant navigation with zero redundant loading via React Context.
+- **Real-time AI Chat**: Live streaming responses using Server-Sent Events (SSE).
+- **Premium UI**: Monochromatic, glassmorphic design with custom animations and loaders.
+- **Toast Notifications**: Integrated global feedback system for user actions.
+- **Persistent Sessions**: Chat history and ticket data cached for a seamless experience.
 
-## Tech Stack
+## 🛠 Tech Stack
 
-- **React 19** + **TypeScript** - Type-safe component development
-- **Vite** - Lightning-fast build tool and dev server
-- **Tailwind CSS** - Utility-first styling
-- **React Router** - Client-side routing
+- **React 19** - Utilizing the latest Concurrent Mode features.
+- **Vite** - Lightning-fast development and optimized production builds.
+- **Tailwind CSS v4** - Cutting-edge utility-first styling.
+- **React Router 7** - Modern client-side routing with state passing.
+- **Markdown Rendering** - `react-markdown` + `remark-gfm` for professional AI responses.
 
-## Architecture
+## 🏗 Architecture & Project Structure
 
-### Clean Component-Based Structure
+The project follows a modular, service-oriented architecture:
 
 ```
 src/
 ├── Components/
-│   ├── Common/          # Reusable UI components
-│   ├── Pages/           # Page-level components
-│   └── Data/            # Data display components
-├── Services/            # API integration layer
-├── Hooks/               # Custom React hooks
-├── Types/               # TypeScript definitions
-├── Styles/              # CSS architecture
-├── utils/               # Helper functions
-└── config/              # App configuration
+│   ├── Common/          # Shared UI (Navbar, Footer, Toast, Loader)
+│   ├── Pages/           # Main Views (Dashboard, Tickets, Chat, About)
+│   └── Forms/           # Complex Form logic (Create Ticket)
+├── Context/             # Global State (TicketContext, ToastContext)
+├── Hooks/               # Custom Logic (useSSEStream, useTickets)
+├── Services/            # API Integration (ticket.service, chat.service)
+├── Types/               # Unified TypeScript Definitions
+├── Styles/              # Component-specific and Global CSS
+└── utils/               # Formatting and Logger utilities
 ```
 
-### Key Features
+## 🔄 Flow of Working (Frontend)
 
-**No External Packages**
-- Custom `ScaleLoader` component built from scratch
-- Pure CSS animations for optimal performance
+The diagram below illustrates the flow of data from a user action to the backend and back to the UI:
 
-**Type-Safe API Layer**
-- Centralized service pattern (`api.service.ts`)
-- Domain-specific services (tickets, chat)
-- TypeScript interfaces matching backend schemas
+```mermaid
+graph TD
+    A["UI Component (e.g., Chat)"] --> B["Custom Hook (e.g., useSSEStream)"]
+    B --> C["Service Layer (chat.service)"]
+    C --> D["Remote Backend (FastAPI / SSE)"]
+    D -- "Real-time Stream" --> C
+    C -- "Update State" --> B
+    B -- "Render Message" --> A
+    
+    E["Ticket Provider (Context)"] -.->|Shared Data| A
+    F["Toast Provider (Context)"] -.->|Global Alert| A
+```
 
-**Custom Hooks**
-- `useTickets` - Ticket state management
-- `useSSEStream` - Real-time AI chat with session persistence
+1. **User Interaction**: User triggers an action (e.g., sends a message).
+2. **Hook Logic**: Custom hooks manage complex side effects and local state.
+3. **Service Layer**: Centralized API calls handle the communication with the backend.
+4. **Context Layer**: Global data (tickets, notifications) is persisted across the entire app.
+5. **Real-time Update**: For chat, SSE streams chunks directly into the UI for a "thinking" effect.
 
-**CSS Design System**
-- `variables.css` - Design tokens (colors, spacing, typography)
-- `components.css` - Reusable component styles
-- `utilities.css` - Utility classes
-
-**SSE Streaming**
-- Real-time AI responses without WebSockets
-- Session storage for chat persistence across refreshes
-
-## Development
+## 🚀 Development
 
 ```bash
 # Install dependencies
 npm install
 
-# Start dev server
+# Start development server
 npm run dev
 
 # Build for production
 npm run build
 ```
 
-## Project Principles
+## 📜 Project Principles
 
-✅ **Component-based** - Modular, reusable components  
-✅ **Clean architecture** - Clear separation of concerns  
-✅ **Type safety** - TypeScript everywhere  
-✅ **Custom solutions** - No unnecessary dependencies  
-✅ **Performance first** - Optimized loaders and animations
+- ✅ **No Heavy Dependencies**: Custom loaders (`ScaleLoader`) and animations for speed.
+- ✅ **Type Safety**: End-to-end TypeScript interfaces.
+- ✅ **Responsive Design**: Mobile-first approach for all pages.
+- ✅ **Clean Code**: Strict separation of styling, logic, and data.

@@ -19,6 +19,7 @@ class ChatService {
      */
     streamGlobalChat(
         message: string,
+        model: string | null,
         callbacks: {
             onMessage: SSEMessageCallback;
             onComplete?: SSECompleteCallback;
@@ -26,7 +27,7 @@ class ChatService {
         }
     ): () => void {
         const url = `${API_BASE_URL}${API_ENDPOINTS.CHAT_GLOBAL}`;
-        return this.startSSEStream(url, { message }, callbacks);
+        return this.startSSEStream(url, { message, model }, callbacks);
     }
 
     /**
@@ -35,6 +36,7 @@ class ChatService {
     streamTicketChat(
         ticketId: string,
         message: string,
+        model: string | null,
         callbacks: {
             onMessage: SSEMessageCallback;
             onComplete?: SSECompleteCallback;
@@ -42,7 +44,7 @@ class ChatService {
         }
     ): () => void {
         const url = `${API_BASE_URL}${API_ENDPOINTS.CHAT_TICKET(ticketId)}`;
-        return this.startSSEStream(url, { message }, callbacks);
+        return this.startSSEStream(url, { message, model }, callbacks);
     }
 
     /**
@@ -50,7 +52,7 @@ class ChatService {
      */
     private startSSEStream(
         url: string,
-        body: { message: string },
+        body: { message: string, model: string | null },
         callbacks: {
             onMessage: SSEMessageCallback;
             onComplete?: SSECompleteCallback;

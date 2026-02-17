@@ -6,17 +6,17 @@
  */
 
 import React, { useState, useRef, useEffect } from 'react';
-import { useParams, useLocation } from 'react-router-dom';
+import { useParams } from 'react-router-dom';
 import useSSEStream from '../../Hooks/useSSEStream';
 import { StreamStatus } from '../../Types/chat.types';
 import ReactMarkdown from 'react-markdown';
 import remarkGfm from 'remark-gfm';
+import { AI_MODELS } from '../../config/constants';
 import '../../Styles/chat.css';
 
 const Chat: React.FC = () => {
     const { ticketId } = useParams<{ ticketId?: string }>();
-    const location = useLocation();
-    const chatType = location.pathname.includes('/chat') ? 'global' : 'ticket';
+    const chatType = ticketId ? 'ticket' : 'global';
 
     const [inputValue, setInputValue] = useState('');
     const messagesEndRef = useRef<HTMLDivElement>(null);
@@ -29,7 +29,9 @@ const Chat: React.FC = () => {
         startStream,
         clearMessages,
         currentAssistantMessage,
-        elapsedTime
+        elapsedTime,
+        selectedModel,
+        setSelectedModel
     } = useSSEStream(chatType, ticketId);
 
     // Auto-scroll to bottom when messages change
@@ -77,18 +79,21 @@ const Chat: React.FC = () => {
             <header className="chat-header">
                 <div className="chat-title-group">
                     <h1 className="chat-title">
-                        {chatType === 'global' ? 'Global AI Assistant' : `Ticket Support #${ticketId?.slice(-6)}`}
+                        {chatType === 'global' ? 'AI Assistant' : `Ticket Support #${ticketId?.slice(-6)}`}
                     </h1>
                     <span className="chat-subtitle">
                         {chatType === 'global' ? 'Ask anything to the AI Knowledge Base' : 'Specific help for this ticket'}
                     </span>
                 </div>
-                <button
-                    className="clear-chat-btn"
-                    onClick={clearMessages}
-                >
-                    Clear History
-                </button>
+
+                <div className="chat-header-actions">
+                    <button
+                        className="clear-chat-btn"
+                        onClick={clearMessages}
+                    >
+                        Clear History
+                    </button>
+                </div>
             </header>
 
             {/* Messages Area */}
@@ -167,13 +172,35 @@ const Chat: React.FC = () => {
                         onKeyDown={handleKeyDown}
                         disabled={isStreaming}
                     />
-                    <button
-                        className="send-btn"
-                        onClick={handleSend}
-                        disabled={!inputValue.trim() || isStreaming}
-                    >
-                        <span className="send-icon">➤</span>
-                    </button>
+                    <div className="input-bottom-row">
+                        <div className="input-toolbar">
+                            <select
+                                className="model-select-compact"
+                                value={selectedModel}
+                                onChange={(e) => {
+                                    console.log('Model changed to:', e.target.value);
+                                    setSelectedModel(e.target.value);
+                                }}
+                                disabled={isStreaming}
+                            >
+                                {AI_MODELS.map(model => (
+                                    <option key={model.id} value={model.id}>
+                                        {model.name}
+                                    </option>
+                                ))}
+                            </select>
+                        </div>
+                        <div className="ai-disclaimer">
+                            ThinkBack AI can make mistakes. Check important info.
+                        </div>
+                        <button
+                            className="send-btn"
+                            onClick={handleSend}
+                            disabled={!inputValue.trim() || isStreaming}
+                        >
+                            <span className="send-icon">➤</span>
+                        </button>
+                    </div>
                 </div>
             </div>
         </div>

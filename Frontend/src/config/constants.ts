@@ -58,6 +58,15 @@ export const RATE_LIMIT = {
     WARNING_THRESHOLD: 8,
 } as const;
 
+// Available AI Models (matching backend .env)
+export const AI_MODELS = [
+    { id: 'google/gemini-2.0-flash-001', name: 'Gemini 2.0 Flash', description: 'Fast & Intelligent' },
+    { id: 'deepseek/deepseek-r1', name: 'DeepSeek R1', description: 'Reasoning & Powerful' },
+    { id: 'anthropic/claude-3.5-sonnet', name: 'Claude 3.5 Sonnet', description: 'Smart & Fast' },
+    { id: 'openai/gpt-4o', name: 'GPT-4o', description: 'Multimodal / High Performance' },
+    { id: 'anthropic/claude-3-opus', name: 'Claude 3 Opus', description: 'Complex & Nuanced' },
+] as const;
+
 export default {
     API_BASE_URL,
     IS_DEVELOPMENT,
@@ -66,4 +75,5 @@ export default {
     VALIDATION,
     STORAGE_KEYS,
     RATE_LIMIT,
+    AI_MODELS,
 };

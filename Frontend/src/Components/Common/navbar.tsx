@@ -20,13 +20,13 @@ const Navbar = () => {
                     {/* Navigation Links */}
                     <div className="nav-links">
                         <Link to="/" className="nav-link">
-                            Dashboard
+                            Home
                         </Link>
                         <Link to="/tickets" className="nav-link">
                             View Tickets
                         </Link>
                         <Link to="/chat" className="nav-link">
-                            Chat with AI
+                            Chat with AI <span className="nav-badge">NEW</span>
                         </Link>
                         <Link to="/about" className="nav-link">
                             About

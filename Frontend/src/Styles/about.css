@@ -1,0 +1,196 @@
+/* About Page Layout - Exact Match with Dashboard/Tickets Pattern */
+.about-page {
+    min-height: calc(100vh - 64px);
+    /* Adjust for navbar height if needed */
+    background-color: #ffffff;
+    /* Page background is White */
+    color: #000000;
+    /* Default text is Black */
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+}
+
+.about-container {
+    width: 100%;
+}
+
+/* Dark Hero Section to match Dashboard pattern */
+.about-hero-full {
+    background-color: #000000;
+    padding: 6rem 2rem;
+    text-align: center;
+    border-bottom: 1px solid #1a1a1a;
+}
+
+.about-content-wrapper {
+    flex: 1;
+    width: 100%;
+    max-width: 1152px;
+    margin: 0 auto;
+    padding: 4rem 1.5rem;
+}
+
+/* Section Components */
+.about-section {
+    margin-bottom: 5rem;
+}
+
+.about-section-title {
+    font-size: 2.25rem;
+    font-weight: 800;
+    color: #000000;
+    margin-bottom: 2.5rem;
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    position: relative;
+    padding-bottom: 0.75rem;
+}
+
+.about-section-title::after {
+    content: '';
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    width: 60px;
+    height: 4px;
+    background-color: #f97316;
+    /* Small brand accent */
+}
+
+/* Hero Typography */
+.about-title {
+    font-size: 4.5rem;
+    font-weight: 950;
+    color: #ffffff;
+    /* White title on black hero */
+    letter-spacing: -0.05em;
+    margin-bottom: 1rem;
+}
+
+.about-tagline {
+    font-size: 1.75rem;
+    color: #f97316;
+    font-weight: 600;
+    margin-bottom: 1.5rem;
+}
+
+.about-description {
+    font-size: 1.25rem;
+    color: #d1d5db;
+    max-width: 800px;
+    margin: 0 auto;
+    line-height: 1.6;
+}
+
+/* Grids - High Contrast Dark Cards */
+.features-grid,
+.tech-grid,
+.security-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+    gap: 1.5rem;
+}
+
+.info-item,
+.tech-card {
+    background-color: #111111;
+    /* Dark cards like dashboard */
+    border: 1px solid #333333;
+    border-radius: 1.25rem;
+    padding: 2.5rem;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    color: #ffffff;
+}
+
+.info-item:hover,
+.tech-card:hover {
+    border-color: #f97316;
+    transform: translateY(-8px);
+    box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.2), 0 0 0 1px rgba(249, 115, 22, 0.1);
+}
+
+.info-item-title,
+.tech-title {
+    font-weight: 800;
+    color: #ffffff;
+    font-size: 1.5rem;
+    margin-bottom: 1rem;
+}
+
+.info-item-text,
+.tech-list {
+    color: #9ca3af;
+    font-size: 1rem;
+    line-height: 1.7;
+}
+
+.tech-list {
+    list-style: none;
+    padding: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 0.75rem;
+}
+
+.tech-list li {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+/* Meta & Links */
+.about-meta {
+    display: flex;
+    justify-content: center;
+    gap: 2rem;
+    margin-top: 3rem;
+}
+
+.about-link {
+    color: #ffffff;
+    text-decoration: none;
+    font-weight: 700;
+    padding: 0.75rem 1.5rem;
+    border: 2px solid #333333;
+    border-radius: 0.75rem;
+    transition: all 0.2s;
+}
+
+.about-link:hover {
+    background-color: #ffffff;
+    color: #000000;
+    border-color: #ffffff;
+}
+
+/* Footer Section */
+.about-footer {
+    text-align: center;
+    padding: 5rem 2rem;
+    background-color: #f9fafb;
+    border-top: 1px solid #e5e7eb;
+    color: #6b7280;
+}
+
+.author-name {
+    color: #000000;
+    font-weight: 700;
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+    .about-title {
+        font-size: 2.5rem;
+    }
+
+    .features-grid,
+    .tech-grid,
+    .security-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .about-hero-full {
+        padding: 4rem 1rem;
+    }
+}
