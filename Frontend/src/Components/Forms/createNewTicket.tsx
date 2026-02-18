@@ -65,9 +65,9 @@ const CreateNewTicket: React.FC<CreateNewTicketProps> = ({ onClose, onSuccess })
         try {
             setLocalLoading(true);
             const tags = tagInput.split(',').map(tag => tag.trim()).filter(tag => tag !== '');
-            const success = await createTicket({ ...formData, tags });
+            const newTicket = await createTicket({ ...formData, tags });
 
-            if (success) {
+            if (newTicket) {
                 showToast('Ticket created successfully!', 'success');
                 onSuccess();
                 onClose();

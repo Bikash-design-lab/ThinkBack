@@ -23,30 +23,29 @@ from Config.db import get_db
 from bson import ObjectId
 from Config.ai_config import ai_handler
 
-# Load centralized style instructions from external file
-GLOBAL_CHAT_PROMPT_PATH = os.path.join(os.path.dirname(__file__), "global_chat.txt")
+from Config.chat_prompts import GLOBAL_SYSTEM_PROMPT, TICKET_SYSTEM_PROMPT
 
-def get_chat_style():
+# Load centralized layout/style instructions from external file
+GLOBAL_STYLE_PATH = os.path.join(os.path.dirname(__file__), "global_chat.txt")
+
+def get_base_style():
     try:
-        with open(GLOBAL_CHAT_PROMPT_PATH, "r", encoding="utf-8") as f:
+        with open(GLOBAL_STYLE_PATH, "r", encoding="utf-8") as f:
             return f.read().strip()
     except Exception as e:
         log_error(f"Error reading global_chat.txt: {e}")
-        return "Format your response in a compact, chat-friendly style."
+        return ""
 
-CHAT_STYLE_INSTRUCTIONS = get_chat_style()
+BASE_STYLE_RULES = get_base_style()
 
 async def stream_global_chat(message: str, model: str = None):
     try:
-        # This provides a much better UX than waiting 10+ seconds for a full paragraph.
-        prompt = message
-        response = ai_handler.stream_content(prompt, model=model, system_instruction=CHAT_STYLE_INSTRUCTIONS)
+        # Combine the Global System Prompt with detailed formatting rules
+        system_instruction = f"{GLOBAL_SYSTEM_PROMPT}\n\nFORMATTING & QUALITY STANDARDS:\n{BASE_STYLE_RULES}"
+        
+        response = ai_handler.stream_content(message, model=model, system_instruction=system_instruction)
         
         try:
-            # Mid-stream error handling.
-            # If the AI connection drops or the quota is hit while generating text,
-            # we must catch the exception and send a structured error message to
-            # the client to prevent the browser from hanging in a "loading" state.
             for chunk in response:
                 content = chunk.choices[0].delta.content
                 if content:
@@ -72,10 +71,17 @@ async def stream_ticket_chat(ticket_id: str, message: str, model: str = None):
             yield f"data: {json.dumps({'error': 'Ticket not found'})}\n\n"
             return
 
-        context = f"Ticket Title: {ticket['title']}\nTicket Description: {ticket['description']}\nAI Summary: {ticket.get('ai_summary', '')}"
-        prompt = f"USER QUESTION: {message}\n\nCONTEXT:\n{context}"
+        # Format the ticket-specific system prompt with actual metadata
+        ticket_system = TICKET_SYSTEM_PROMPT.format(
+            title=ticket.get("title", "Unknown"),
+            description=ticket.get("description", "No description"),
+            ai_summary=ticket.get("ai_summary", "No summary available")
+        )
+
+        # Combine with formatting rules
+        system_instruction = f"{ticket_system}\n\nFORMATTING & QUALITY STANDARDS:\n{BASE_STYLE_RULES}"
         
-        response = ai_handler.stream_content(prompt, model=model, system_instruction=CHAT_STYLE_INSTRUCTIONS)
+        response = ai_handler.stream_content(message, model=model, system_instruction=system_instruction)
         
         try:
             for chunk in response:

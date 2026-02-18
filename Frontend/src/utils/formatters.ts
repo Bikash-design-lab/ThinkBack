@@ -9,7 +9,14 @@
  */
 export const formatDate = (dateString: string): string => {
     try {
-        const date = new Date(dateString);
+        // Handle MongoDB/Python UTC strings that might not have the 'Z' suffix
+        let formattedDateString = dateString;
+        if (dateString && !dateString.includes('Z') && !dateString.includes('+')) {
+            // If it's an ISO-like string without timezone, assume UTC
+            formattedDateString = dateString.includes('T') ? `${dateString}Z` : `${dateString.replace(' ', 'T')}Z`;
+        }
+
+        const date = new Date(formattedDateString);
         const now = new Date();
         const diffMs = now.getTime() - date.getTime();
         const diffMins = Math.floor(diffMs / 60000);
@@ -46,6 +53,15 @@ export const formatCategory = (category: string): string => {
 export const truncateText = (text: string, maxLength: number): string => {
     if (text.length <= maxLength) return text;
     return text.slice(0, maxLength).trim() + '...';
+};
+
+/**
+ * Truncate text by word count
+ */
+export const truncateWords = (text: string, maxWords: number): string => {
+    const words = text.split(/\s+/).filter(word => word.length > 0);
+    if (words.length <= maxWords) return text;
+    return words.slice(0, maxWords).join(' ') + '...';
 };
 
 /**

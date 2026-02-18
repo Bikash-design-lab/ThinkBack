@@ -8,7 +8,7 @@
 import { useState, useEffect } from 'react';
 import { Link, useLocation } from 'react-router-dom';
 import ScaleLoader from '../Common/loader';
-import { formatDate, formatCategory } from '../../utils/formatters';
+import { formatDate, formatCategory, truncateWords } from '../../utils/formatters';
 import useTickets from '../../Hooks/useTickets';
 import CreateNewTicket from '../Forms/createNewTicket';
 import Footer from './footer';
@@ -118,25 +118,29 @@ const Tickets = () => {
 
                                     {ticket.description && (
                                         <p className="ticket-item-description">
-                                            {ticket.description}
+                                            {truncateWords(ticket.description, 15)}
                                         </p>
                                     )}
 
                                     {/* Tags */}
-                                    {ticket.tags && ticket.tags.length > 0 && (
-                                        <div className="ticket-tags">
-                                            {ticket.tags.slice(0, 3).map((tag, index) => (
-                                                <span key={index} className="ticket-tag">
-                                                    {tag}
-                                                </span>
-                                            ))}
-                                            {ticket.tags.length > 3 && (
-                                                <span className="ticket-tag">
-                                                    +{ticket.tags.length - 3}
-                                                </span>
-                                            )}
-                                        </div>
-                                    )}
+                                    <div className="ticket-tags">
+                                        {ticket.tags && ticket.tags.length > 0 ? (
+                                            <>
+                                                {ticket.tags.slice(0, 3).map((tag, index) => (
+                                                    <span key={index} className="ticket-tag">
+                                                        {tag}
+                                                    </span>
+                                                ))}
+                                                {ticket.tags.length > 3 && (
+                                                    <span className="ticket-tag">
+                                                        +{ticket.tags.length - 3}
+                                                    </span>
+                                                )}
+                                            </>
+                                        ) : (
+                                            <span className="ticket-tag no-tags">No tags</span>
+                                        )}
+                                    </div>
 
                                     {/* Footer */}
                                     <div className="ticket-footer">
