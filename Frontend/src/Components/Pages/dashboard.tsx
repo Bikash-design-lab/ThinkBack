@@ -24,18 +24,6 @@ import { formatDate, formatCategory } from '../../utils/formatters';
 import Footer from '../Pages/footer';
 import '../../Styles/dashboard.css';
 
-const cleanSummary = (text) => {
-  if (!text) return '';
-
-  return text
-    .replace(/\*\*/g, '')          // remove bold
-    .replace(/\*/g, '')            // remove bullets
-    .replace(/Summary:/gi, '')
-    .replace(/Details:/gi, '')
-    .replace(/\n+/g, ' ')
-    .trim();
-};
-
 const Dashboard = () => {
     const { tickets, loading, error } = useTickets(true);
 
@@ -271,11 +259,7 @@ const Dashboard = () => {
                                             </span>
                                         </div>
 
-                                        {ticket.ai_summary && (
-                                            <p className="ticket-summary">
-                                               {cleanSummary(ticket.ai_summary)}
-                                            </p>
-                                        )}
+                                        {ticket.ai_summary && ( <p className="ticket-summary"> {ticket.ai_summary} </p> )}
 
                                         <div className="ticket-meta">
                                             <span>Created:{formatDate(ticket.created_at)}</span>
