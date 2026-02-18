@@ -1,8 +1,8 @@
-# ThinkBack
+# [ThinkBack](https://think-back.vercel.app)
 
 ## 📌 AI-Powered Educational Helpdesk Platform
 
-ThinkBack is an interactive full-stack application designed to streamline educational inquiries through AI-tutoring and smart ticket management. It leverages **Google Gemini** for real-time, context-aware assistance.
+ThinkBack is an interactive full-stack application designed to streamline educational inquiries through AI-tutoring and smart ticket management. It leverages **AI's** for real-time, context-aware assistance.
 
 [![Frontend](https://img.shields.io/badge/Frontend-React%2019-black)](Frontend/README-FRONTEND.md)
 [![Backend](https://img.shields.io/badge/Backend-FastAPI-orange)](Backend/README-BACKEND.md)
